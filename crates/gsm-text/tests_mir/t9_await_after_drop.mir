@@ -1,0 +1,8 @@
+fn task_good
+bb0:
+  g0 = acquire mutex_lock
+  drop_call g0 -> bb1
+bb1:
+  suspend -> bb2
+bb2:
+  ret

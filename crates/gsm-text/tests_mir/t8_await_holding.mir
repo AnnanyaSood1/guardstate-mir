@@ -1,0 +1,7 @@
+fn task_bad
+bb0:
+  g0 = acquire mutex_lock
+  suspend -> bb1
+bb1:
+  drop g0
+  ret

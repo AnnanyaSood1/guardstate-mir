@@ -1,0 +1,18 @@
+[package]
+name = "gsm-text"
+version = "0.1.0"
+edition = "2021"
+authors = ["Annanya Sood <annanyas0142@gmail.com>"]
+description = "Text (MIR-shaped) frontend for guardstate-mir: parses .mir files into gsm-core IR and runs the analysis on stable Rust."
+license = "GPL-2.0"
+
+[lib]
+name = "gsm_text"
+path = "src/lib.rs"
+
+[[bin]]
+name = "gsm-text"
+path = "src/bin/gsm_text.rs"
+
+[dependencies]
+gsm-core = { path = "../gsm-core" }

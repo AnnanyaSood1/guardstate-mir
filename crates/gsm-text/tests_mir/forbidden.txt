@@ -1,0 +1,4 @@
+# Forbidden operations for the block-in-atomic detector (knowledge base).
+rust_helper_mutex_lock
+rust_helper_krealloc_gfp_kernel
+schedule

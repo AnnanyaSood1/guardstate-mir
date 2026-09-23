@@ -1,0 +1,6 @@
+# Pin for the nightly, rustc_private crates (gsm-mir, gsm-dylint).
+# NOTE: verify/adjust this exact nightly on day 1 against the rustc_private API
+# and (for the CLSC config, P2b) against the kernel's required rustc.
+[toolchain]
+channel = "nightly-2025-01-15"
+components = ["rustc-dev", "llvm-tools-preview", "rust-src"]

@@ -1,0 +1,7 @@
+== checkpoints ==
+driver_mutex::bb0  call rust_helper_mutex_lock  [held: Sleepable(_0)]
+
+== violations (detector: block-in-atomic) ==
+(none)
+
+summary: 1 checkpoint(s), 0 violation(s)

@@ -1,0 +1,15 @@
+[package]
+name = "gsm-dylint"
+version = "0.1.0"
+edition = "2021"
+authors = ["Annanya Sood <annanyas0142@gmail.com>"]
+description = "NIGHTLY Tier-1 frontend: a dylint lint that runs gsm-mir + gsm-core over real crates. Excluded from the stable workspace."
+license = "GPL-2.0"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+gsm-core = { path = "../gsm-core" }
+gsm-mir  = { path = "../gsm-mir" }
+# dylint_linting = "..."   # add on the pinned nightly per dylint's template

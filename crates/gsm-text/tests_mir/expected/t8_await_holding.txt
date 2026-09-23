@@ -1,0 +1,7 @@
+== checkpoints ==
+task_bad::bb0  suspend                      [held: Sleepable(_0)]
+
+== violations (detector: await-holding-guard) ==
+VIOLATION task_bad::bb0 suspend while holding Sleepable
+
+summary: 1 checkpoint(s), 1 violation(s)

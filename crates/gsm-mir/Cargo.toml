@@ -1,0 +1,12 @@
+[package]
+name = "gsm-mir"
+version = "0.1.0"
+edition = "2021"
+authors = ["Annanya Sood <annanyas0142@gmail.com>"]
+description = "NIGHTLY rustc_private frontend: lowers real rustc MIR into gsm-core IR. Builds only on the pinned nightly; excluded from the stable workspace."
+license = "GPL-2.0"
+
+[dependencies]
+gsm-core = { path = "../gsm-core" }
+# rustc_private crates (rustc_middle, rustc_hir, rustc_span, ...) are provided by
+# the `rustc-dev` component of the pinned nightly, not by crates.io.

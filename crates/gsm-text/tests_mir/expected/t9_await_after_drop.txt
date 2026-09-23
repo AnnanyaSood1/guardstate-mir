@@ -1,0 +1,7 @@
+== checkpoints ==
+task_good::bb1  suspend                      [held: none]
+
+== violations (detector: await-holding-guard) ==
+(none)
+
+summary: 1 checkpoint(s), 0 violation(s)

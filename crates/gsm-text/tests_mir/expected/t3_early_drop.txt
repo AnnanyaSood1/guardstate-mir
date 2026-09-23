@@ -1,0 +1,7 @@
+== checkpoints ==
+driver_early_drop::bb1  call rust_helper_mutex_lock  [held: none]
+
+== violations (detector: block-in-atomic) ==
+(none)
+
+summary: 1 checkpoint(s), 0 violation(s)

@@ -1,0 +1,7 @@
+== checkpoints ==
+driver_write::bb0  call rust_helper_mutex_lock  [held: PreemptDisabling(_0)]
+
+== violations (detector: block-in-atomic) ==
+VIOLATION driver_write::bb0 call rust_helper_mutex_lock while holding PreemptDisabling
+
+summary: 1 checkpoint(s), 1 violation(s)

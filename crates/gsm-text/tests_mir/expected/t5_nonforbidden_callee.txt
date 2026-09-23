@@ -1,0 +1,6 @@
+== checkpoints ==
+
+== violations (detector: block-in-atomic) ==
+(none)
+
+summary: 0 checkpoint(s), 0 violation(s)

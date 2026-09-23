@@ -1,0 +1,11 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/gsm-core",
+    "crates/gsm-text",
+]
+# Nightly, rustc_private crates are built separately on the pinned toolchain.
+exclude = [
+    "crates/gsm-mir",
+    "crates/gsm-dylint",
+]

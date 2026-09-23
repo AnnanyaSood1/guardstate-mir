@@ -1,0 +1,8 @@
+== checkpoints ==
+driver_try::bb1  call rust_helper_mutex_lock  [held: PreemptDisabling(_0)]
+driver_try::bb2  call rust_helper_mutex_lock  [held: none]
+
+== violations (detector: block-in-atomic) ==
+VIOLATION driver_try::bb1 call rust_helper_mutex_lock while holding PreemptDisabling
+
+summary: 2 checkpoint(s), 1 violation(s)

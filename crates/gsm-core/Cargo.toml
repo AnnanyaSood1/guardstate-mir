@@ -1,0 +1,9 @@
+[package]
+name = "gsm-core"
+version = "0.1.0"
+edition = "2021"
+authors = ["Annanya Sood <annanyas0142@gmail.com>"]
+description = "Stable core of guardstate-mir: abstract CFG, guard-liveness typestate lattice, and the checkpoint checker."
+license = "GPL-2.0"
+
+[dependencies]
