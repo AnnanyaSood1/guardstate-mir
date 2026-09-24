@@ -40,7 +40,7 @@ text format, `guardstate-mir` is built to run that same proven lattice over
 - [Roadmap (Tier 1 → Tier 2)](#roadmap-tier-1--tier-2)
 - [Status and honesty](#status-and-honesty)
 - [Design document](#design-document)
-- [Author and attribution](#author-and-attribution)
+- [Authorship](#authorship)
 
 ---
 
@@ -241,20 +241,29 @@ with architecture, pipeline, and checkpoint diagrams.
 since the CLSC configuration targets Rust-for-Linux. Every source file carries
 an `SPDX-License-Identifier` header.
 
-## Author and attribution
+## Authorship
 
 **Author:** Annanya Sood — <annanyas0142@gmail.com>
 
-I scoped and directed this project: which slice of the larger checker to build 
-(the Rust-side guard-liveness analysis, decoupled and generalized into a configurable engine),
-the choice to prove the algorithm on stable Rust before taking on the rustc_private front-end, 
-the architecture that quarantines the fragile MIR-facing code behind a stable core, and the requirement 
-that the tool's boundaries be stated honestly and its tests mirror a fault-injection design. I also drove
-the design revisions in response to detailed technical review (the drop-elaboration correction, the coroutine 
-saved-local subtlety, scoping D-AWAIT as attempt-and-report, and cutting the lock-ordering detector).
+I scoped this project and own its design. The governing decision is mine and is
+the reason the repository is laid out as it is: the fragile `rustc_private` code
+is written once and quarantined behind a stable boundary, so that a nightly bump
+can break only `gsm-mir` while the proven lattice and its tests keep compiling.
+Bounding that blast radius is the central design choice. So are the others: to
+prove the algorithm on stable Rust before taking on the `rustc_private`
+frontend; to generalize the lattice from my earlier `guardstate` prototype by
+classifying guards by *class* and modelling conditional acquisition as an edge
+activation on a general branch rather than a bespoke node, which makes
+sleep-in-atomic and await-holding-lock two configurations of one engine; and to
+state the artifact's boundaries plainly rather than claim it reads real MIR
+before it does.
 
-The analysis and implementation were produced in collaboration with an AI assistant (Claude, by Anthropic): the core lattice
-is a port of my earlier guardstate prototype; the abstract CFG, the guard-liveness fixpoint's realization, and the rustc MIR-lowering 
-design were developed jointly with the assistant, with me making the shaping decisions (what to include, what to defer, what to reject) 
-and the assistant proposing structures and writing code. The full design rationale is in DESIGN.md. I am working through the key design 
-choices to be able to defend them independently, and I take responsibility for the artifact as published.
+I also drove the design revisions that followed detailed technical review: the
+drop-elaboration correction, the coroutine saved-local subtlety at suspend
+points, scoping D-AWAIT as attempt-and-report rather than promising it, and
+cutting the lock-ordering detector as out of scope.
+
+The implementation was written with AI assistance (Claude, by Anthropic) working
+to that direction. The full design is in [`DESIGN.md`](DESIGN.md). I can account
+for each component and the reasoning behind it, and I take responsibility for
+the artifact as published.
