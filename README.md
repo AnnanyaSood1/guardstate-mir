@@ -245,8 +245,6 @@ an `SPDX-License-Identifier` header.
 
 **Author:** Annanya Sood — <annanyas0142@gmail.com>
 
-Author: Annanya Sood — annanyas0142@gmail.com
-
 I scoped and directed this project: which slice of the larger checker to build 
 (the Rust-side guard-liveness analysis, decoupled and generalized into a configurable engine),
 the choice to prove the algorithm on stable Rust before taking on the rustc_private front-end, 
