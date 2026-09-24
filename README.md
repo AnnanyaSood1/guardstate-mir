@@ -209,13 +209,9 @@ guardstate-mir/
 
 ## Status and honesty
 
-This is a research artifact and it says what it is. The **stable core + text
-frontend are done and tested**; they prove the analysis logic. The **real-MIR
-frontend is scaffolded, not finished** — it compiles only on the pinned nightly
-and carries `todo!()`-anchored lowering that must be completed against the
-`rustc_private` API (an iterative process, by nature). D-AWAIT depends on
-coroutine saved-local analysis and is scoped as *attempt-and-report*. Nothing
-here claims to read real MIR until `gsm-mir` actually does.
+Live status, work-in-progress details, and the current week's targets live in STATUS.md, updated weekly. 
+The short version: the stable core and text frontend are done and tested; nothing here reads real rustc MIR 
+until gsm-mir does.
 
 ---
 
