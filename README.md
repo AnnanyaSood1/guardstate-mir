@@ -195,10 +195,11 @@ guardstate-mir/
 ## Roadmap (Tier 1 → Tier 2)
 
 - **P0 — workspace + stable core + text tests.** ✅ done (this drop).
-- **P1a — `gsm-mir` + `gsm-dylint`, D-BLOCK on real MIR.** Guard-by-type, drop
-  points, forbidden-call checkpoints, direct-call resolution. *Erases the
-  asymmetry.* (Day-1 task: verify the MIR-query choice on the pinned nightly.)
-- **P1b — D-AWAIT (attempted; reported honestly).** Coroutine saved-local
+- **P1a** — gsm-mir + gsm-dylint, D-BLOCK on real MIR. Guard-by-type, drop
+   points, forbidden-call checkpoints, direct-call resolution. In active development —
+  see issues #1, #2, #3, #4, #5, #6.
+- **P1b** — D-AWAIT (attempted; reported honestly). Coroutine saved-local analysis at suspend points. See #7.
+   Not claimed until it works end-to-end.
   analysis at suspend points. Not claimed until it works end-to-end.
 - **P2a — `gsm-driver`.** rustc-wrapper for non-cargo builds; run on a larger
   standalone crate.
