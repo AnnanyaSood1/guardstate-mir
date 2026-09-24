@@ -1,8 +1,5 @@
-<!--
-SPDX-License-Identifier: GPL-2.0
-Author: Annanya Sood <annanyas0142@gmail.com>
--->
-![CI](https://github.com/AnnanyaSood1/guardstate-mir/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/AnnanyaSood1/guardstate-mir/actions/workflows/ci.yml/badge.svg)](https://github.com/AnnanyaSood1/guardstate-mir/actions/workflows/ci.yml)
+
 # guardstate-mir
 
 **A MIR-level critical-section typestate analyzer for Rust — the real-`rustc`-MIR
@@ -15,15 +12,19 @@ engine. A guard is any value whose **type** establishes a restricted context; a
 **checkpoint** is a forbidden call or an `.await` suspend point; the rule is
 uniform: **guard-live at a checkpoint ⇒ violation.**
 
-Where `guardstate` proved the typestate lattice on a hand-written MIR-shaped text
-format, `guardstate-mir` is built to run that same proven lattice over **real
-`rustc` MIR** — closing the exact gap `guardstate` left open.
+Where `guardstate` proved the typestate lattice on a hand-written MIR-shaped
+text format, `guardstate-mir` is built to run that same proven lattice over
+**real `rustc` MIR** — closing the exact gap `guardstate` left open.
 
-> **Status.** The stable core and the text frontend are complete and tested
-> (9/9). The real-MIR frontend (`gsm-mir`) and the Tier-1 `dylint` lint
-> (`gsm-dylint`) are scaffolded against the design and build on a pinned nightly;
-> they are **work in progress** and excluded from the stable build. See
-> [Status and honesty](#status-and-honesty).
+> **Status.** The stable core (`gsm-core`) and text frontend (`gsm-text`) are
+> implemented and unit-tested against nine golden fixtures — seven ported from
+> `guardstate` plus two async-shape checkpoints — which exercise the lattice
+> and the checker but not real MIR ingestion. The real-MIR frontend
+> (`gsm-mir`) and the Tier-1 `dylint` lint (`gsm-dylint`) are scaffolded
+> against the design on a pinned nightly and are **actively in development**
+> (see [`STATUS.md`](STATUS.md) and the [issue tracker](../../issues)).
+> Nothing here reads real `rustc` MIR until `gsm-mir` does. Excluded from the
+> stable workspace build.
 
 ---
 
@@ -39,7 +40,7 @@ format, `guardstate-mir` is built to run that same proven lattice over **real
 - [Roadmap (Tier 1 → Tier 2)](#roadmap-tier-1--tier-2)
 - [Status and honesty](#status-and-honesty)
 - [Design document](#design-document)
-- [Author, license, and AI-assistance note](#author-license-and-ai-assistance-note)
+- [Author and attribution](#author-and-attribution)
 
 ---
 
@@ -55,10 +56,10 @@ flowchart TB
   Clear -->|"checkpoint"| OK["ok"]
 ```
 
-Sleep-in-atomic (the research target) is just the configuration where the counted
-guard class is *preemption-disabling* and the forbidden set is *may-sleep*
-primitives; await-holding-lock is the configuration where the checkpoint is a
-suspend point.
+Sleep-in-atomic (the research target) is just the configuration where the
+counted guard class is *preemption-disabling* and the forbidden set is
+*may-sleep* primitives; await-holding-lock is the configuration where the
+checkpoint is a suspend point.
 
 ---
 
@@ -101,8 +102,8 @@ flowchart LR
 ```
 
 A nightly bump that breaks `rustc_private` can only break `gsm-mir`; the proven
-lattice and its tests keep compiling and passing. That blast-radius bound is the
-central design decision.
+lattice and its tests keep compiling and passing. That blast-radius bound is
+the central design decision.
 
 ---
 
@@ -116,8 +117,11 @@ central design decision.
   than a bespoke node.
 - **`gsm-text`** — a text `.mir` frontend + CLI that lowers into `gsm-core` and
   runs the analysis, so the core is exercised on stable Rust.
-- **Test suite** — nine golden fixtures, **9/9 passing**: the seven original
-  `guardstate` shapes plus two `suspend` (await) shapes. `./run_tests.sh`.
+- **Test suite** — nine text-format golden fixtures (`./run_tests.sh`): the
+  seven original `guardstate` shapes plus two `suspend` (await) shapes. These
+  exercise the lattice's transfer functions and the checker rule, not MIR
+  ingestion — real-`.rs`-fixture tests land with `gsm-mir` (see
+  [`STATUS.md`](STATUS.md)).
 
 ---
 
@@ -125,9 +129,9 @@ central design decision.
 
 Requires stable Rust (1.75+) for the core and text crates. No dependencies.
 
-```sh
+```bash
 cargo build                     # builds the stable crates (gsm-core, gsm-text)
-./run_tests.sh                  # 9/9 golden tests
+./run_tests.sh                  # runs the nine text-format golden tests
 
 # Run the analyzer on one text fixture:
 ./target/debug/gsm-text crates/gsm-text/tests_mir/t1_spinlock_sleep.mir \
@@ -135,8 +139,10 @@ cargo build                     # builds the stable crates (gsm-core, gsm-text)
     --detector block-in-atomic
 ```
 
-The nightly crates (`gsm-mir`, `gsm-dylint`) are **excluded** from the workspace
-and require the pinned toolchain in `rust-toolchain.toml`; they are WIP.
+The nightly crates (`gsm-mir`, `gsm-dylint`) are **excluded** from the
+workspace and require the pinned toolchain in `rust-toolchain.toml`; they are
+WIP — see [`STATUS.md`](STATUS.md) and the
+[issue tracker](../../issues).
 
 ---
 
@@ -154,11 +160,12 @@ bb1:
   ret
 ```
 
-Also: `try g0 = spin_lock -> succ fail` (conditional acquire; guard live only on
-`succ`), `suspend -> bb` (an `.await` checkpoint), `drop_call`/`forget_call`
-(`core::mem::drop` / `core::mem::forget`, the latter keeping the guard live). The
-`--forbidden` file lists forbidden callee symbols — the knowledge base that plays
-the role the C-side CanSleep summary plays in the full CLSC design.
+Also: `try g0 = spin_lock -> succ fail` (conditional acquire; guard live only
+on `succ`), `suspend -> bb` (an `.await` checkpoint), `drop_call` /
+`forget_call` (`core::mem::drop` / `core::mem::forget`, the latter keeping the
+guard live). The `--forbidden` file lists forbidden callee symbols — the
+knowledge base that plays the role the C-side CanSleep summary plays in the
+full CLSC design.
 
 ---
 
@@ -180,6 +187,7 @@ guardstate-mir/
 ├── rust-toolchain.toml        # pins the nightly for the rustc_private crates
 ├── run_tests.sh
 ├── README.md                  # this file
+├── STATUS.md                  # live WIP status, updated weekly
 ├── DESIGN.md                  # full design document (with diagrams)
 ├── LICENSE                    # GPL-2.0
 ├── crates/
@@ -194,50 +202,61 @@ guardstate-mir/
 
 ## Roadmap (Tier 1 → Tier 2)
 
-- **P0 — workspace + stable core + text tests.** ✅ done (this drop).
-- **P1a** — gsm-mir + gsm-dylint, D-BLOCK on real MIR. Guard-by-type, drop
-   points, forbidden-call checkpoints, direct-call resolution. In active development —
-  see issues #1, #2, #3, #4, #5, #6.
-- **P1b** — D-AWAIT (attempted; reported honestly). Coroutine saved-local analysis at suspend points. See #7.
-   Not claimed until it works end-to-end.
-  analysis at suspend points. Not claimed until it works end-to-end.
+- **P0 — workspace + stable core + text tests.** ✅ done.
+- **P1a — `gsm-mir` + `gsm-dylint`, D-BLOCK on real MIR.** Guard-by-type, drop
+  points, forbidden-call checkpoints, direct-call resolution. In active
+  development — see issues [#1](../../issues/1), [#2](../../issues/2),
+  [#3](../../issues/3), [#4](../../issues/4), [#5](../../issues/5),
+  [#6](../../issues/6).
+- **P1b — D-AWAIT (attempted; reported honestly).** Coroutine saved-local
+  analysis at suspend points. See [#7](../../issues/7). Not claimed until it
+  works end-to-end.
 - **P2a — `gsm-driver`.** rustc-wrapper for non-cargo builds; run on a larger
   standalone crate.
-- **P2b — CLSC configuration.** Load RfL guard backends + may-sleep primitives to
-  recover the research's Rust half.
+- **P2b — CLSC configuration.** Load RfL guard backends + may-sleep primitives
+  to recover the research's Rust half.
 
 ---
 
 ## Status and honesty
 
-Live status, work-in-progress details, and the current week's targets live in STATUS.md, updated weekly. 
-The short version: the stable core and text frontend are done and tested; nothing here reads real rustc MIR 
-until gsm-mir does.
+Live status, work-in-progress details, and the current week's targets live in
+[`STATUS.md`](STATUS.md), updated weekly. The short version: the stable core
+and text frontend are done and tested; nothing here reads real `rustc` MIR
+until `gsm-mir` does.
 
 ---
 
 ## Design document
 
-See [`DESIGN.md`](DESIGN.md) for the full design: goals/non-goals, the core IR,
-the four MIR-lowering sub-problems (with the corrected drop-elaboration note and
-the coroutine saved-local subtlety), soundness and precision, the testing
-strategy, risks, phasing, and the relationship to the CLSC research — with
-architecture, pipeline, and checkpoint diagrams.
+See [`DESIGN.md`](DESIGN.md) for the full design: goals and non-goals, the core
+IR, the four MIR-lowering sub-problems (with the corrected drop-elaboration
+note and the coroutine saved-local subtlety), soundness and precision, the
+testing strategy, risks, phasing, and the relationship to the CLSC research —
+with architecture, pipeline, and checkpoint diagrams.
 
 ---
 
-## Author, license, and AI-assistance note
+**License:** GPL-2.0 (see [`LICENSE`](LICENSE)), matching the Linux kernel
+since the CLSC configuration targets Rust-for-Linux. Every source file carries
+an `SPDX-License-Identifier` header.
 
-**Author:** Annanya Sood &lt;annanyas0142@gmail.com&gt;
+## Author and attribution
 
-**License:** GPL-2.0 (see [`LICENSE`](LICENSE)), matching the Linux kernel since
-the CLSC configuration targets Rust-for-Linux. Every source file carries an
-`SPDX-License-Identifier` header.
+**Author:** Annanya Sood — <annanyas0142@gmail.com>
 
-**AI assistance (declared up front).** The core lattice (proven in `guardstate`)
-is ported and reimplemented by hand as a learning exercise; the `rustc_private`
-MIR-walking code (`gsm-mir`) is AI-assisted for API discovery, with each construct
-to be verified against `rustc` source on the pinned nightly; the `dylint`
-boilerplate is AI-assisted. Per-crate disclosure accompanies the shipped artifact.
-See `DESIGN.md` §16.
-EOF
+Author: Annanya Sood — annanyas0142@gmail.com
+
+I scoped and directed this project: which slice of the larger checker to build 
+(the Rust-side guard-liveness analysis, decoupled and generalized into a configurable engine),
+the choice to prove the algorithm on stable Rust before taking on the rustc_private front-end, 
+the architecture that quarantines the fragile MIR-facing code behind a stable core, and the requirement 
+that the tool's boundaries be stated honestly and its tests mirror a fault-injection design. I also drove
+the design revisions in response to detailed technical review (the drop-elaboration correction, the coroutine 
+saved-local subtlety, scoping D-AWAIT as attempt-and-report, and cutting the lock-ordering detector).
+
+The analysis and implementation were produced in collaboration with an AI assistant (Claude, by Anthropic): the core lattice
+is a port of my earlier guardstate prototype; the abstract CFG, the guard-liveness fixpoint's realization, and the rustc MIR-lowering 
+design were developed jointly with the assistant, with me making the shaping decisions (what to include, what to defer, what to reject) 
+and the assistant proposing structures and writing code. The full design rationale is in DESIGN.md. I am working through the key design 
+choices to be able to defend them independently, and I take responsibility for the artifact as published.
